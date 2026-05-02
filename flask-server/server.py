@@ -137,8 +137,8 @@ scheduler = BackgroundScheduler(timezone=timezone("Asia/Phnom_Penh"))
 scheduler.add_job(run_daily_scraper, 'cron', hour=12, minute=0)
 
 
-if __name__ == "__main__":
-    scheduler.start()
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     scheduler.start()
+#     app.run(debug=True)
 
 # source venv/bin/activate
