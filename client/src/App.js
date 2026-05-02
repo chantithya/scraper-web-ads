@@ -19,14 +19,15 @@ function App() {
   const [popupMessage, setPopupMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/keywords")
+    // fetch("http://localhost:5000/keywords")
+    fetch("/keywords")
       .then(res => res.json())
       .then(setKeywords)
       .catch(console.error);
   }, []);
 
   const loadData = (keyword) => {
-    fetch(`http://localhost:5000/data/${keyword}`)
+    fetch(`/data/${keyword}`)
       .then(res => res.json())
       .then(data => {
         setData(data);
@@ -88,14 +89,14 @@ function App() {
             setIsLoading(true);
             setPopupMessage("🔍 Scraping in progress... Please wait");
           
-            fetch(`http://localhost:5000/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
+            fetch(`/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
               .then(res => res.json())
               .then(() => {
                 setPopupMessage("✅ Scraping completed!");
                 setIsLoading(false);
           
                 // refresh keywords
-                fetch("http://localhost:5000/keywords")
+                fetch("/keywords")
                   .then(res => res.json())
                   .then(setKeywords);
               })
@@ -127,14 +128,14 @@ function App() {
   
               <button
                 className="btn btn-sm btn-outline-success ms-2"
-                onClick={() => window.open(`http://localhost:5000/download/${kw}`)}
+                onClick={() => window.open(`/download/${kw}`)}
               >
                 <FaFileExcel />
               </button>
               <button
                 className="btn btn-sm btn-outline-primary ms-2"
                 onClick={() =>
-                  window.open(`http://localhost:5000/download-images/${kw}`)
+                  window.open(`/download-images/${kw}`)
                 }
               >
                 🖼️
