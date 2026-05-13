@@ -31,13 +31,61 @@ function CustomTable({ data }) {
   
     cell: (row) => {
       const value = row[key];
-  
+    
+      // ✅ MEDIA URL
       if (key === "media_url" && typeof value === "string") {
+    
+        let fixedUrl = value.trim();
+    
+        // Fix broken protocols
+        fixedUrl = fixedUrl.replace(/^https\/\//, "https://");
+        fixedUrl = fixedUrl.replace(/^http\/\//, "http://");
+    
+        // Add protocol if missing
+        if (
+          !fixedUrl.startsWith("http://") &&
+          !fixedUrl.startsWith("https://")
+        ) {
+          fixedUrl = "https://" + fixedUrl.replace(/^\/+/, "");
+        }
+    
+        // Detect video
+        const isVideo =
+          fixedUrl.includes(".mp4") ||
+          fixedUrl.includes("video.fpnh");
+    
+        // ✅ VIDEO
+        if (isVideo) {
+          return (
+            <video
+              width="120"
+              height="80"
+              controls
+              muted
+              playsInline
+              style={{
+                borderRadius: "8px",
+                objectFit: "cover",
+              }}
+            >
+              <source src={fixedUrl} type="video/mp4" />
+            </video>
+          );
+        }
+    
+        // ✅ IMAGE
         return (
           <img
-            src={value}
+            src={fixedUrl}
             alt="ad"
-            onClick={() => setSelectedImage(value)}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onClick={() => setSelectedImage(fixedUrl)}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src =
+                "https://via.placeholder.com/80?text=No+Image";
+            }}
             style={{
               width: "80px",
               height: "80px",
@@ -48,13 +96,15 @@ function CustomTable({ data }) {
           />
         );
       }
-  
+    
+      // ✅ AD TEXT
       if (key === "ad_text" && typeof value === "string") {
         const isLong = value.length > 120;
-  
+    
         return (
           <div style={{ maxWidth: "300px" }}>
             {isLong ? value.substring(0, 40) + "..." : value}
+    
             {isLong && (
               <span
                 onClick={() => setSelectedText(value)}
@@ -71,11 +121,11 @@ function CustomTable({ data }) {
           </div>
         );
       }
-  
+    
+      // ✅ LINK
       if (
         typeof value === "string" &&
-        value.startsWith("http") &&
-        (index === 5 || index === 7 || index === 8)
+        value.startsWith("http")
       ) {
         return (
           <a
@@ -88,7 +138,7 @@ function CustomTable({ data }) {
           </a>
         );
       }
-  
+    
       return value;
     },
   }));
