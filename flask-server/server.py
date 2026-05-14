@@ -16,8 +16,6 @@ CORS(app)
 
 
 DATA_FOLDER = "data"
-os.makedirs(DATA_FOLDER, exist_ok=True)
-os.makedirs("images", exist_ok=True)
 
 # 🔹 Get all keywords (CSV files)
 @app.route("/keywords")
