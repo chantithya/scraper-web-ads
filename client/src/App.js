@@ -99,8 +99,8 @@ function App() {
                 setIsLoading(false);
           
                 // refresh keywords
-                fetch("/keywords")
-                // fetch(`${API}/keywords`)
+                // fetch("/keywords")
+                fetch(`${API}/keywords`)
                   .then(res => res.json())
                   .then(setKeywords);
               })
@@ -140,8 +140,8 @@ function App() {
               <button
                 className="btn btn-sm btn-outline-primary ms-2"
                 onClick={() =>
-                  window.open(`/download-images/${kw}`)
-                  // window.open(`${API}/download-images/${kw}`)
+                  // window.open(`/download-images/${kw}`)
+                  window.open(`${API}/download-images/${kw}`)
                 }
               >
                 🖼️

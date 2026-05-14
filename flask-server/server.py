@@ -16,17 +16,26 @@ CORS(app)
 
 
 DATA_FOLDER = "data"
+os.makedirs(DATA_FOLDER, exist_ok=True)
+os.makedirs("images", exist_ok=True)
+
 # 🔹 Get all keywords (CSV files)
 @app.route("/keywords")
 def get_keywords():
-    files = os.listdir(DATA_FOLDER)
+    try:
+        files = os.listdir(DATA_FOLDER)
 
-    keywords = [
-        f.replace("ads_full_data_", "").replace(".csv", "")
-        for f in files if f.endswith(".csv")
-    ]
+        keywords = [
+            f.replace("ads_full_data_", "").replace(".csv", "")
+            for f in files if f.endswith(".csv")
+        ]
 
-    return jsonify(keywords)
+        return jsonify(keywords)
+
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 # 🔹 Get data by keyword
@@ -38,7 +47,9 @@ def get_data_by_keyword(keyword):
         return jsonify([])
 
     df = pd.read_csv(file_path)
-    return df.to_json(orient="records")
+    # return df.to_json(orient="records")
+    return jsonify(df.to_dict(orient="records"))
+
 
 @app.route("/download/<keyword>")
 def download_file(keyword):
