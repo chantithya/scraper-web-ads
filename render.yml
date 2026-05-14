@@ -3,8 +3,5 @@ services:
     name: scraper-web-ads
     env: python
     rootDir: flask-server
-    # buildCommand: pip install -r requirements.txt
-    # startCommand: gunicorn server:app
-    buildCommand: |
-      pip install -r requirements.txt
-    startCommand: python server.py
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app

@@ -1,9 +1,0 @@
-Flask
-flask-cors
-pandas
-apscheduler
-pytz
-gunicorn
-
-setuptools>=68
-wheel>=0.40

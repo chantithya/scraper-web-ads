@@ -18,16 +18,20 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
 
+  const API = "https://scraper-web-ads-zrq6.onrender.com";
+
   useEffect(() => {
     // fetch("http://localhost:5000/keywords")
-    fetch("/keywords")
+    // fetch("/keywords")
+    fetch(`${API}/keywords`)
       .then(res => res.json())
       .then(setKeywords)
       .catch(console.error);
   }, []);
 
   const loadData = (keyword) => {
-    fetch(`/data/${keyword}`)
+    // fetch(`http://localhost:5000/data/${keyword}`)
+    fetch(`${API}/data/${keyword}`)
       .then(res => res.json())
       .then(data => {
         setData(data);
@@ -60,8 +64,6 @@ function App() {
           onChange={(e) => setCountry(e.target.value)}
         >
           <option>Vietnam</option>
-          <option>Cambodia</option>
-          <option>Thailand</option>
         </select>
   
         {/* Ad Type */}
@@ -89,7 +91,8 @@ function App() {
             setIsLoading(true);
             setPopupMessage("🔍 Scraping in progress... Please wait");
           
-            fetch(`/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
+            // fetch(`http://localhost:5000/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
+            fetch(`${API}/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
               .then(res => res.json())
               .then(() => {
                 setPopupMessage("✅ Scraping completed!");
@@ -97,6 +100,7 @@ function App() {
           
                 // refresh keywords
                 fetch("/keywords")
+                // fetch(`${API}/keywords`)
                   .then(res => res.json())
                   .then(setKeywords);
               })
@@ -128,7 +132,8 @@ function App() {
   
               <button
                 className="btn btn-sm btn-outline-success ms-2"
-                onClick={() => window.open(`/download/${kw}`)}
+                // onClick={() => window.open(`/download/${kw}`)}
+                onClick={() => window.open(`${API}/download/${kw}`)}
               >
                 <FaFileExcel />
               </button>
@@ -136,6 +141,7 @@ function App() {
                 className="btn btn-sm btn-outline-primary ms-2"
                 onClick={() =>
                   window.open(`/download-images/${kw}`)
+                  // window.open(`${API}/download-images/${kw}`)
                 }
               >
                 🖼️
