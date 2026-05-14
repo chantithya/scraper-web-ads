@@ -39,13 +39,17 @@ def get_keywords():
 # 🔹 Get data by keyword
 @app.route("/data/<keyword>")
 def get_data_by_keyword(keyword):
+
     file_path = os.path.join(DATA_FOLDER, f"ads_full_data_{keyword}.csv")
 
     if not os.path.exists(file_path):
         return jsonify([])
 
     df = pd.read_csv(file_path)
-    # return df.to_json(orient="records")
+
+    # Replace NaN with empty string
+    df = df.fillna("")
+
     return jsonify(df.to_dict(orient="records"))
 
 
