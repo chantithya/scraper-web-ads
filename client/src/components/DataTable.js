@@ -58,7 +58,7 @@ function CustomTable({ data }) {
         if (isVideo) {
           return (
             <video
-              width="120"
+              width="80"
               height="80"
               controls
               muted
