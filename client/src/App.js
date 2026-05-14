@@ -99,7 +99,7 @@ function App() {
                 setIsLoading(false);
           
                 // refresh keywords
-                fetch("/keywords")
+                fetch(`${API}/keywords`)
                 // fetch(`${API}/keywords`)
                   .then(res => res.json())
                   .then(setKeywords);
