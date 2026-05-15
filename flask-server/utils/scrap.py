@@ -40,6 +40,7 @@ def setup_folders():
 #     return driver
 
 def setup_driver():
+
     chrome_options = Options()
 
     chrome_options.binary_location = os.environ.get("CHROME_BIN")
@@ -50,11 +51,16 @@ def setup_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
 
-    service = Service(os.environ.get("CHROMEDRIVER_PATH"))
+    service = Service(
+        os.environ.get("CHROMEDRIVER_PATH")
+    )
 
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(
+        service=service,
+        options=chrome_options
+    )
 
-    return driver   
+    return driver
 
 
 def clean_facebook_url(url):

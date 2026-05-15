@@ -52,7 +52,9 @@ def get_data_by_keyword(keyword):
         
 
     df = pd.read_csv(file_path)
-    return df.to_json(orient="records")
+    df = df.fillna("")
+
+    return jsonify(df.to_dict(orient="records"))
 
 
 @app.route("/download/<keyword>")
