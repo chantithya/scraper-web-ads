@@ -12,7 +12,7 @@ from pytz import timezone
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 DATA_FOLDER = "data"
@@ -130,6 +130,16 @@ def download_images(keyword):
 
 # 🔁 Daily scraper function
 is_running = False
+
+@app.route("/debug")
+def debug():
+    import shutil
+    return {
+        "chromium": shutil.which("chromium"),
+        "chromedriver": shutil.which("chromedriver"),
+        "chrome_bin_env": os.environ.get("CHROME_BIN"),
+        "chromedriver_env": os.environ.get("CHROMEDRIVER_PATH")
+    }
 
 def run_daily_scraper():
     global is_running

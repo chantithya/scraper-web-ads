@@ -3,5 +3,13 @@ services:
     name: scraper-web-ads
     env: python
     rootDir: flask-server
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install -r requirements.txt
     startCommand: gunicorn server:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CHROME_BIN
+        value: /usr/bin/chromium
+      - key: CHROMEDRIVER_PATH
+        value: /usr/bin/chromedriver
