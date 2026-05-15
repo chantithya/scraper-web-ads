@@ -73,14 +73,20 @@ def scrap():
     ad_type = request.args.get("type")
     keyword = request.args.get("keyword")
 
-    result = run_scraper(country, ad_type, keyword)
+    try:
+        result = run_scraper(country, ad_type, keyword)
 
-    return jsonify({
-        "country": country,
-        "type": ad_type,
-        "keyword": keyword,
-        "result": result
-    })
+        return jsonify({
+            "country": country,
+            "type": ad_type,
+            "keyword": keyword,
+            "result": result
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 @app.route("/download-images/<keyword>")
@@ -148,9 +154,3 @@ def run_daily_scraper():
 scheduler = BackgroundScheduler(timezone=timezone("Asia/Phnom_Penh"))
 scheduler.add_job(run_daily_scraper, 'cron', hour=12, minute=0)
 
-
-# if __name__ == "__main__":
-#     scheduler.start()
-#     app.run(debug=True)
-
-# source venv/bin/activate

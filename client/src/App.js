@@ -92,7 +92,10 @@ function App() {
             setPopupMessage("🔍 Scraping in progress... Please wait");
           
             // fetch(`http://localhost:5000/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
-            fetch(`${API}/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
+            // fetch(`${API}/scrap?country=${country}&type=${adType}&keyword=${searchText}`)
+            fetch(
+              `${API}/scrap?country=${encodeURIComponent(country)}&type=${encodeURIComponent(adType)}&keyword=${encodeURIComponent(searchText)}`
+            )
               .then(res => res.json())
               .then(() => {
                 setPopupMessage("✅ Scraping completed!");
