@@ -17,6 +17,10 @@ CORS(app)
 
 DATA_FOLDER = "data"
 
+@app.route("/")
+def home():
+    return "Server is running"
+
 # 🔹 Get all keywords (CSV files)
 @app.route("/keywords")
 def get_keywords():
@@ -69,11 +73,12 @@ def download_file(keyword):
 
 @app.route("/scrap", methods=["GET"])
 def scrap():
-    country = request.args.get("country")
-    ad_type = request.args.get("type")
-    keyword = request.args.get("keyword")
 
     try:
+        country = request.args.get("country")
+        ad_type = request.args.get("type")
+        keyword = request.args.get("keyword")
+
         result = run_scraper(country, ad_type, keyword)
 
         return jsonify({
@@ -84,6 +89,9 @@ def scrap():
         })
 
     except Exception as e:
+
+        print("SCRAP ERROR:", str(e))
+
         return jsonify({
             "error": str(e)
         }), 500
