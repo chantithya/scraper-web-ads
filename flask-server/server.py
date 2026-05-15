@@ -45,7 +45,11 @@ def get_data_by_keyword(keyword):
         return jsonify([])
 
     df = pd.read_csv(file_path)
-    return df.to_json(orient="records")
+
+    # Fix NaN JSON issue
+    df = df.fillna("")
+
+    return jsonify(df.to_dict(orient="records"))
 
 
 @app.route("/download/<keyword>")
