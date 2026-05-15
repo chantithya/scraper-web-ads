@@ -72,30 +72,16 @@ def download_file(keyword):
 
 @app.route("/scrap", methods=["GET"])
 def scrap():
-
     try:
-
         country = request.args.get("country")
         ad_type = request.args.get("type")
         keyword = request.args.get("keyword")
 
-        print("Country:", country)
-        print("Ad Type:", ad_type)
-        print("Keyword:", keyword)
-
         result = run_scraper(country, ad_type, keyword)
 
-        return jsonify({
-            "country": country,
-            "type": ad_type,
-            "keyword": keyword,
-            "result": result
-        })
+        return jsonify({"result": result})
 
     except Exception as e:
-
-        print("SCRAP ERROR:", str(e))
-
         return jsonify({
             "error": str(e)
         }), 500
