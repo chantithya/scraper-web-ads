@@ -12,11 +12,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException, StaleElementReferenceException
-from selenium.webdriver.chrome.service import Service
 
 from urllib.parse import quote, urlparse, parse_qs, urlencode, urlunparse
-
-import shutil
 
 
 def setup_folders():
@@ -43,22 +40,13 @@ def setup_driver():
 
     chrome_options = Options()
 
-    chrome_options.binary_location = os.environ.get("CHROME_BIN")
-
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
 
-    service = Service(
-        os.environ.get("CHROMEDRIVER_PATH")
-    )
-
-    driver = webdriver.Chrome(
-        service=service,
-        options=chrome_options
-    )
+    driver = webdriver.Chrome(options=chrome_options)
 
     return driver
 
