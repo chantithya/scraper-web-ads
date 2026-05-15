@@ -38,27 +38,24 @@ def setup_folders():
 #     return driver
 
 def setup_driver():
-
     chrome_options = Options()
 
-    chrome_options.binary_location = os.environ.get("CHROME_BIN")
+    chrome_bin = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
+    driver_path = os.environ.get("CHROMEDRIVER_PATH", "/usr/bin/chromedriver")
+
+    chrome_options.binary_location = chrome_bin
 
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument("--remote-debugging-port=9222")
 
-    service = Service(
-        os.environ.get("CHROMEDRIVER_PATH")
-    )
+    service = Service(driver_path)
 
-    driver = webdriver.Chrome(
-        service=service,
-        options=chrome_options
-    )
-
-    return driver
+    return webdriver.Chrome(service=service, options=chrome_options)
 
 
 def clean_facebook_url(url):

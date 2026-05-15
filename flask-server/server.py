@@ -98,17 +98,11 @@ def scrap():
 
         result = run_scraper(country, ad_type, keyword)
 
-        return jsonify({
-            "success": True,
-            "result": result
-        })
+        return jsonify({"result": result})
 
     except Exception as e:
         print("SCRAP ERROR:", str(e))
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        }), 500
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/download-images/<keyword>")
