@@ -75,9 +75,14 @@ def download_file(keyword):
 def scrap():
 
     try:
+
         country = request.args.get("country")
         ad_type = request.args.get("type")
         keyword = request.args.get("keyword")
+
+        print("Country:", country)
+        print("Ad Type:", ad_type)
+        print("Keyword:", keyword)
 
         result = run_scraper(country, ad_type, keyword)
 
