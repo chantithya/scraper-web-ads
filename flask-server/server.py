@@ -96,13 +96,20 @@ def scrap():
         ad_type = request.args.get("type")
         keyword = request.args.get("keyword")
 
+        print("START SCRAP:", country, ad_type, keyword)
+
         result = run_scraper(country, ad_type, keyword)
 
         return jsonify({"result": result})
 
     except Exception as e:
-        print("SCRAP ERROR:", str(e))
-        return jsonify({"error": str(e)}), 500
+        import traceback
+        print("🔥 SCRAP FAILED:")
+        traceback.print_exc()
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 @app.route("/download-images/<keyword>")

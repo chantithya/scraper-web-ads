@@ -40,22 +40,25 @@ def setup_folders():
 def setup_driver():
     chrome_options = Options()
 
-    chrome_bin = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
-    driver_path = os.environ.get("CHROMEDRIVER_PATH", "/usr/bin/chromedriver")
-
-    chrome_options.binary_location = chrome_bin
+    chrome_options.binary_location = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
 
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
+
+    # 🔥 IMPORTANT FOR RENDER
     chrome_options.add_argument("--disable-software-rasterizer")
     chrome_options.add_argument("--remote-debugging-port=9222")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
-    service = Service(driver_path)
+    service = Service(os.environ.get("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
 
-    return webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    return driver
 
 
 def clean_facebook_url(url):
@@ -110,9 +113,12 @@ def run_scraper(country, ad_type, keyword):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(5)
 
-            WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Library ID')]"))
-            )
+            try:
+                WebDriverWait(driver, 20).until(
+                    EC.presence_of_element_located((By.XPATH, "//body"))
+                )
+            except:
+                print("Page load timeout, continuing anyway")
 
             ads = driver.find_elements(
                 By.XPATH,
