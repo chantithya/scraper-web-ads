@@ -16,6 +16,7 @@ from selenium.webdriver.chrome.service import Service
 
 from urllib.parse import quote, urlparse, parse_qs, urlencode, urlunparse
 
+import shutil
 
 
 def setup_folders():
@@ -41,6 +42,9 @@ def setup_folders():
 def setup_driver():
 
     chrome_options = Options()
+
+    chrome_options.binary_location = shutil.which("chromium")
+    service = Service(shutil.which("chromedriver"))
 
     chrome_options.binary_location = os.environ.get("CHROME_BIN")
 
