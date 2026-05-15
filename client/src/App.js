@@ -18,7 +18,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
 
-  const API = "https://scraper-web-ads-zrq6.onrender.com";
+  const API = "https://scraper-web-ads-1.onrender.com";
 
   useEffect(() => {
     // fetch("http://localhost:5000/keywords")
