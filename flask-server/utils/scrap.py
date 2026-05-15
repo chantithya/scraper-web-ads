@@ -15,6 +15,8 @@ from selenium.common.exceptions import WebDriverException, StaleElementReference
 
 from urllib.parse import quote, urlparse, parse_qs, urlencode, urlunparse
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import TimeoutException
+
 
 
 def setup_folders():
@@ -48,17 +50,15 @@ def setup_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
 
-    # 🔥 IMPORTANT FOR RENDER
+    # 🔥 IMPORTANT STABILITY FLAGS
     chrome_options.add_argument("--disable-software-rasterizer")
     chrome_options.add_argument("--remote-debugging-port=9222")
-    chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--disable-extensions")
 
     service = Service(os.environ.get("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
 
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-
-    return driver
+    return webdriver.Chrome(service=service, options=chrome_options)
 
 
 def clean_facebook_url(url):
@@ -113,12 +113,14 @@ def run_scraper(country, ad_type, keyword):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(5)
 
+            from selenium.common.exceptions import TimeoutException
+
             try:
                 WebDriverWait(driver, 20).until(
-                    EC.presence_of_element_located((By.XPATH, "//body"))
+                    EC.presence_of_element_located((By.TAG_NAME, "body"))
                 )
-            except:
-                print("Page load timeout, continuing anyway")
+            except TimeoutException:
+                print("⚠️ Page load timeout - continuing anyway")
 
             ads = driver.find_elements(
                 By.XPATH,

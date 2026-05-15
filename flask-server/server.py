@@ -89,6 +89,7 @@ def download_file(keyword):
 #         }), 500
 
 
+
 @app.route("/scrap", methods=["GET"])
 def scrap():
     try:
@@ -96,16 +97,19 @@ def scrap():
         ad_type = request.args.get("type")
         keyword = request.args.get("keyword")
 
-        print("START SCRAP:", country, ad_type, keyword)
+        print("🚀 START SCRAP:", country, ad_type, keyword)
 
         result = run_scraper(country, ad_type, keyword)
 
+        print("✅ SCRAP DONE")
         return jsonify({"result": result})
 
     except Exception as e:
         import traceback
-        print("🔥 SCRAP FAILED:")
+
+        print("🔥 FULL ERROR START")
         traceback.print_exc()
+        print("🔥 FULL ERROR END")
 
         return jsonify({
             "error": str(e)
