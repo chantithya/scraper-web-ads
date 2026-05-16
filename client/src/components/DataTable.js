@@ -168,17 +168,18 @@ function CustomTable({ data }) {
     headRow: {
       style: {
         backgroundColor: "#1e293b",
-        color: "white",
-        fontSize: "14px",
-        fontWeight: "600",
-        textAlign: "center", // ✅ align header row
+        minHeight: "50px",
       },
     },
   
     headCells: {
       style: {
-        justifyContent: "center", // ✅ center THEAD
-        textAlign: "center",
+        display: "flex",
+        justifyContent: "center", // ✅ center header
+        alignItems: "center",
+        fontWeight: "600",
+        color: "white",
+        fontSize: "14px",
       },
     },
   
@@ -186,19 +187,20 @@ function CustomTable({ data }) {
       style: {
         minHeight: "60px",
         fontSize: "14px",
-        textAlign: "center", // ✅ align TBODY
-      },
-  
-      highlightOnHoverStyle: {
-        backgroundColor: "#f1f5f9",
-        cursor: "pointer",
+        display: "flex", // 🔥 important for alignment control
+        alignItems: "center",
       },
     },
   
     cells: {
       style: {
-        justifyContent: "center", // ✅ center tbody content
-        textAlign: "center",
+        display: "flex",
+        justifyContent: "center", // ✅ center tbody
+        alignItems: "center",
+        paddingLeft: "8px",
+        paddingRight: "8px",
+        whiteSpace: "normal",
+        wordBreak: "break-word",
       },
     },
   
