@@ -15,45 +15,58 @@ function CustomTable({ data }) {
 
   if (!data.length) return <p>Loading data...</p>;
 
-  const columns = Object.keys(data[0]).map((key, index) => ({
+  const columnOrder = [
+    "keyword",
+    "status",
+    "library_id",
+    "date",
+    "page_name",
+    "page_link",
+    "sponsored",
+    "ad_text",
+    "media_url",
+  ];
+  
+  const columns = columnOrder.map((key, index) => ({
     name: key.toUpperCase(),
     selector: (row) => row[key],
     sortable: true,
     wrap: true,
   
-    // ✅ SAFE WAY (no DOM leakage)
     style: {
-      minWidth: (index === 1 || index === 6) ? "140px" : "120px",
-      maxWidth: (index === 1 || index === 6) ? "140px" : "auto",
+      minWidth:
+        key === "ad_text"
+          ? "300px"
+          : key === "media_url"
+          ? "120px"
+          : "150px",
+  
       whiteSpace: "normal",
       wordBreak: "break-word",
     },
   
     cell: (row) => {
       const value = row[key];
-    
+  
       // ✅ MEDIA URL
       if (key === "media_url" && typeof value === "string") {
-    
+  
         let fixedUrl = value.trim();
-    
-        // Fix broken protocols
+  
         fixedUrl = fixedUrl.replace(/^https\/\//, "https://");
         fixedUrl = fixedUrl.replace(/^http\/\//, "http://");
-    
-        // Add protocol if missing
+  
         if (
           !fixedUrl.startsWith("http://") &&
           !fixedUrl.startsWith("https://")
         ) {
           fixedUrl = "https://" + fixedUrl.replace(/^\/+/, "");
         }
-    
-        // Detect video
+  
         const isVideo =
           fixedUrl.includes(".mp4") ||
           fixedUrl.includes("video.fpnh");
-    
+  
         // ✅ VIDEO
         if (isVideo) {
           return (
@@ -72,7 +85,7 @@ function CustomTable({ data }) {
             </video>
           );
         }
-    
+  
         // ✅ IMAGE
         return (
           <img
@@ -96,15 +109,15 @@ function CustomTable({ data }) {
           />
         );
       }
-    
+  
       // ✅ AD TEXT
       if (key === "ad_text" && typeof value === "string") {
         const isLong = value.length > 120;
-    
+  
         return (
           <div style={{ maxWidth: "300px" }}>
             {isLong ? value.substring(0, 40) + "..." : value}
-    
+  
             {isLong && (
               <span
                 onClick={() => setSelectedText(value)}
@@ -121,7 +134,7 @@ function CustomTable({ data }) {
           </div>
         );
       }
-    
+  
       // ✅ LINK
       if (
         typeof value === "string" &&
@@ -132,13 +145,12 @@ function CustomTable({ data }) {
             href={value}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ whiteSpace: "nowrap" }}
           >
             🔗 Visit
           </a>
         );
       }
-    
+  
       return value;
     },
   }));
