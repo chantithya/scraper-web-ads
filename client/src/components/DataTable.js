@@ -39,7 +39,7 @@ function CustomTable({ data }) {
           ? "300px"
           : key === "media_url"
           ? "120px"
-          : "150px",
+          : "140px",
   
       whiteSpace: "normal",
       wordBreak: "break-word",
@@ -145,6 +145,7 @@ function CustomTable({ data }) {
             href={value}
             target="_blank"
             rel="noopener noreferrer"
+            style={{ whiteSpace: "nowrap" }}
           >
             🔗 Visit
           </a>
