@@ -171,13 +171,6 @@ function CustomTable({ data }) {
 
   // 🎨 Custom Styles
   const customStyles = {
-    table: {
-      style: {
-        borderRadius: "12px",
-        overflow: "hidden",
-      },
-    },
-  
     headRow: {
       style: {
         backgroundColor: "#1e293b",
@@ -187,39 +180,25 @@ function CustomTable({ data }) {
   
     headCells: {
       style: {
-        display: "flex",
-        justifyContent: "center", // ✅ center header
-        alignItems: "center",
-        fontWeight: "600",
         color: "white",
+        fontWeight: "600",
         fontSize: "14px",
+        justifyContent: "center",
       },
     },
   
     rows: {
       style: {
-        minHeight: "60px",
-        fontSize: "14px",
-        display: "flex", // 🔥 important for alignment control
-        alignItems: "center",
+        minHeight: "70px",
       },
     },
   
     cells: {
       style: {
-        display: "flex",
-        justifyContent: "center", // ✅ center tbody
+        justifyContent: "center",
         alignItems: "center",
-        paddingLeft: "8px",
-        paddingRight: "8px",
-        whiteSpace: "normal",
-        wordBreak: "break-word",
-      },
-    },
-  
-    pagination: {
-      style: {
-        borderTop: "1px solid #e2e8f0",
+        textAlign: "center",
+        padding: "10px",
       },
     },
   };
