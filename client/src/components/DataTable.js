@@ -1,21 +1,22 @@
-// src/components/DataTable.js
-
 import React from "react";
 import DataTable from "react-data-table-component";
 
-
 function CustomTable({ data }) {
-    const [filterText, setFilterText] = React.useState("");
-    const [selectedImage, setSelectedImage] = React.useState(null);
-    const [selectedText, setSelectedText] = React.useState(null);
-    const DEFAULT_IMAGE = "/no-image.png";
+  const [filterText, setFilterText] = React.useState("");
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [selectedText, setSelectedText] = React.useState(null);
+
+  const DEFAULT_IMAGE = "/no-image.png";
 
   const filteredData = data.filter((item) =>
-    JSON.stringify(item).toLowerCase().includes(filterText.toLowerCase())
+    JSON.stringify(item)
+      .toLowerCase()
+      .includes(filterText.toLowerCase())
   );
 
   if (!data.length) return <p>Loading data...</p>;
 
+  // ✅ COLUMN ORDER
   const columnOrder = [
     "keyword",
     "status",
@@ -27,61 +28,68 @@ function CustomTable({ data }) {
     "ad_text",
     "media_url",
   ];
-  
-  const columns = columnOrder.map((key) => {
 
+  const columns = columnOrder.map((key) => {
     let columnWidth = "140px";
-  
+
     if (key === "ad_text") {
       columnWidth = "320px";
     }
-  
+
     if (key === "media_url") {
       columnWidth = "120px";
     }
-  
+
     return {
       name: key.toUpperCase(),
       selector: (row) => row[key],
       sortable: true,
       wrap: true,
-  
-      grow: 0, // ✅ important
-  
+
+      grow: 0,
+
       width: columnWidth,
       minWidth: columnWidth,
       maxWidth: columnWidth,
-  
+
       center: key !== "ad_text",
-  
+
       style: {
         whiteSpace: "normal",
         wordBreak: "break-word",
         textAlign: key === "ad_text" ? "left" : "center",
       },
-  
+
       cell: (row) => {
         const value = row[key];
-  
+
         // ✅ MEDIA URL
         if (key === "media_url" && typeof value === "string") {
-  
           let fixedUrl = value.trim();
-  
-          fixedUrl = fixedUrl.replace(/^https\/\//, "https://");
-          fixedUrl = fixedUrl.replace(/^http\/\//, "http://");
-  
+
+          fixedUrl = fixedUrl.replace(
+            /^https\/\//,
+            "https://"
+          );
+
+          fixedUrl = fixedUrl.replace(
+            /^http\/\//,
+            "http://"
+          );
+
           if (
             !fixedUrl.startsWith("http://") &&
             !fixedUrl.startsWith("https://")
           ) {
-            fixedUrl = "https://" + fixedUrl.replace(/^\/+/, "");
+            fixedUrl =
+              "https://" + fixedUrl.replace(/^\/+/, "");
           }
-  
+
           const isVideo =
             fixedUrl.includes(".mp4") ||
             fixedUrl.includes("video.fpnh");
-  
+
+          // ✅ VIDEO
           if (isVideo) {
             return (
               <video
@@ -99,11 +107,15 @@ function CustomTable({ data }) {
                   objectFit: "cover",
                 }}
               >
-                <source src={fixedUrl || DEFAULT_IMAGE} type="video/mp4" />
+                <source
+                  src={fixedUrl}
+                  type="video/mp4"
+                />
               </video>
             );
           }
-  
+
+          // ✅ IMAGE
           return (
             <img
               src={fixedUrl || DEFAULT_IMAGE}
@@ -111,10 +123,12 @@ function CustomTable({ data }) {
               loading="lazy"
               referrerPolicy="no-referrer"
               crossOrigin="anonymous"
-              onClick={() => setSelectedImage(fixedUrl)}
+              onClick={() =>
+                setSelectedImage(fixedUrl)
+              }
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "/no-image.png";
+                e.target.src = DEFAULT_IMAGE;
               }}
               style={{
                 width: "80px",
@@ -126,19 +140,30 @@ function CustomTable({ data }) {
             />
           );
         }
-  
+
         // ✅ AD TEXT
-        if (key === "ad_text" && typeof value === "string") {
-  
+        if (
+          key === "ad_text" &&
+          typeof value === "string"
+        ) {
           const isLong = value.length > 120;
-  
+
           return (
-            <div style={{ width: "100%" }}>
-              {isLong ? value.substring(0, 40) + "..." : value}
-  
+            <div
+              style={{
+                width: "100%",
+                textAlign: "left",
+              }}
+            >
+              {isLong
+                ? value.substring(0, 40) + "..."
+                : value}
+
               {isLong && (
                 <span
-                  onClick={() => setSelectedText(value)}
+                  onClick={() =>
+                    setSelectedText(value)
+                  }
                   style={{
                     color: "#2563eb",
                     cursor: "pointer",
@@ -152,7 +177,7 @@ function CustomTable({ data }) {
             </div>
           );
         }
-  
+
         // ✅ LINK
         if (
           typeof value === "string" &&
@@ -168,36 +193,50 @@ function CustomTable({ data }) {
             </a>
           );
         }
-  
-        return value;
+
+        return value || "-";
       },
     };
   });
 
-  // 🎨 Custom Styles
+  // ✅ CUSTOM STYLES
   const customStyles = {
+    table: {
+      style: {
+        borderRadius: "12px",
+        overflow: "hidden",
+      },
+    },
+
     headRow: {
       style: {
         backgroundColor: "#1e293b",
-        minHeight: "50px",
+        minHeight: "55px",
       },
     },
-  
+
     headCells: {
       style: {
         color: "white",
         fontWeight: "600",
         fontSize: "14px",
         justifyContent: "center",
+        textAlign: "center",
       },
     },
-  
+
     rows: {
       style: {
-        minHeight: "70px",
+        minHeight: "80px",
+        fontSize: "14px",
+      },
+
+      highlightOnHoverStyle: {
+        backgroundColor: "#f1f5f9",
+        cursor: "pointer",
       },
     },
-  
+
     cells: {
       style: {
         justifyContent: "center",
@@ -206,12 +245,23 @@ function CustomTable({ data }) {
         padding: "10px",
       },
     },
+
+    pagination: {
+      style: {
+        borderTop: "1px solid #e2e8f0",
+      },
+    },
   };
 
   return (
-    <div style={{ background: "#f8fafc", padding: "20px", borderRadius: "12px" }}>
-      
-      {/* 🔍 Search + Title */}
+    <div
+      style={{
+        background: "#f8fafc",
+        padding: "20px",
+        borderRadius: "12px",
+      }}
+    >
+      {/* 🔍 HEADER */}
       <div
         style={{
           display: "flex",
@@ -221,13 +271,17 @@ function CustomTable({ data }) {
           gap: "10px",
         }}
       >
-        <h2 style={{ margin: 0 }}>📊 Scraper Dashboard</h2>
+        <h2 style={{ margin: 0 }}>
+          📊 Scraper Dashboard
+        </h2>
 
         <input
           type="text"
           placeholder="Search..."
           value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
+          onChange={(e) =>
+            setFilterText(e.target.value)
+          }
           style={{
             padding: "8px",
             borderRadius: "8px",
@@ -236,110 +290,97 @@ function CustomTable({ data }) {
           }}
         />
       </div>
+
+      {/* ✅ IMAGE MODAL */}
       {selectedImage && (
         <div
-            onClick={() => setSelectedImage(null)}
-            style={{
+          onClick={() => setSelectedImage(null)}
+          style={{
             position: "fixed",
             top: 0,
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0,0,0,0.8)",
+            backgroundColor:
+              "rgba(0,0,0,0.8)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             zIndex: 9999,
-            }}
+          }}
         >
-            <img
-                src={selectedImage}
-                alt="preview"
-                onClick={(e) => e.stopPropagation()}  // ✅ important
-                style={{
-                    maxWidth: "90%",
-                    maxHeight: "90%",
-                    borderRadius: "12px",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                }}
-            />
-            <div
+          <img
+            src={selectedImage}
+            alt="preview"
+            onClick={(e) =>
+              e.stopPropagation()
+            }
             style={{
-                position: "absolute",
-                top: "20px",
-                right: "30px",
-                color: "white",
-                fontSize: "28px",
-                cursor: "pointer",
+              maxWidth: "90%",
+              maxHeight: "90%",
+              borderRadius: "12px",
             }}
-            >
-            ✖
-            </div>
+          />
         </div>
-        )}
+      )}
 
-        {selectedText && (
+      {/* ✅ TEXT MODAL */}
+      {selectedText && (
         <div
-            onClick={() => setSelectedText(null)}
-            style={{
+          onClick={() => setSelectedText(null)}
+          style={{
             position: "fixed",
             top: 0,
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0,0,0,0.8)",
+            backgroundColor:
+              "rgba(0,0,0,0.8)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             zIndex: 9999,
             padding: "20px",
-            }}
+          }}
         >
-            <div
-            onClick={(e) => e.stopPropagation()}
+          <div
+            onClick={(e) =>
+              e.stopPropagation()
+            }
             style={{
-                background: "white",
-                padding: "20px",
-                borderRadius: "12px",
-                maxWidth: "600px",
-                maxHeight: "80%",
-                overflowY: "auto",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+              background: "white",
+              padding: "20px",
+              borderRadius: "12px",
+              maxWidth: "600px",
+              maxHeight: "80%",
+              overflowY: "auto",
             }}
-            >
+          >
             <h3>📄 Full Ad Text</h3>
-            <p style={{ whiteSpace: "pre-wrap" }}>{selectedText}</p>
 
-            <div
-                onClick={() => setSelectedText(null)}
-                style={{
-                marginTop: "10px",
-                textAlign: "right",
-                cursor: "pointer",
-                color: "#2563eb",
-                fontWeight: "500",
-                }}
+            <p
+              style={{
+                whiteSpace: "pre-wrap",
+              }}
             >
-                Close ✖
-            </div>
-            </div>
+              {selectedText}
+            </p>
+          </div>
         </div>
-        )}
+      )}
 
-      {/* 📊 Data Table */}
+      {/* ✅ TABLE */}
       <DataTable
         columns={columns}
         data={filteredData}
         pagination
-        highlightOnHover
         striped
-        responsive   // ✅ important
+        responsive
+        highlightOnHover
         customStyles={customStyles}
       />
     </div>
   );
 }
-
-
 
 export default CustomTable;
