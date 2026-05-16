@@ -8,6 +8,7 @@ function CustomTable({ data }) {
     const [filterText, setFilterText] = React.useState("");
     const [selectedImage, setSelectedImage] = React.useState(null);
     const [selectedText, setSelectedText] = React.useState(null);
+    const DEFAULT_IMAGE = "/no-image.png";
 
   const filteredData = data.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(filterText.toLowerCase())
@@ -89,27 +90,31 @@ function CustomTable({ data }) {
                 controls
                 muted
                 playsInline
+                preload="metadata"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
                 style={{
                   borderRadius: "8px",
                   objectFit: "cover",
                 }}
               >
-                <source src={fixedUrl} type="video/mp4" />
+                <source src={fixedUrl || DEFAULT_IMAGE} type="video/mp4" />
               </video>
             );
           }
   
           return (
             <img
-              src={fixedUrl}
+              src={fixedUrl || DEFAULT_IMAGE}
               alt="ad"
               loading="lazy"
               referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
               onClick={() => setSelectedImage(fixedUrl)}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src =
-                  "https://via.placeholder.com/80?text=No+Image";
+                e.target.src = "/no-image.png";
               }}
               style={{
                 width: "80px",
