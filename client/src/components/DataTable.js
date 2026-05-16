@@ -164,30 +164,49 @@ function CustomTable({ data }) {
         overflow: "hidden",
       },
     },
+  
     headRow: {
       style: {
         backgroundColor: "#1e293b",
         color: "white",
         fontSize: "14px",
         fontWeight: "600",
+        textAlign: "center", // ✅ align header row
       },
     },
+  
+    headCells: {
+      style: {
+        justifyContent: "center", // ✅ center THEAD
+        textAlign: "center",
+      },
+    },
+  
     rows: {
       style: {
         minHeight: "60px",
         fontSize: "14px",
+        textAlign: "center", // ✅ align TBODY
       },
+  
       highlightOnHoverStyle: {
         backgroundColor: "#f1f5f9",
         cursor: "pointer",
       },
     },
+  
+    cells: {
+      style: {
+        justifyContent: "center", // ✅ center tbody content
+        textAlign: "center",
+      },
+    },
+  
     pagination: {
       style: {
         borderTop: "1px solid #e2e8f0",
       },
     },
-    
   };
 
   return (
