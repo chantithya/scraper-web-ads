@@ -27,134 +27,147 @@ function CustomTable({ data }) {
     "media_url",
   ];
   
-  const columns = columnOrder.map((key, index) => ({
-    name: key.toUpperCase(),
-    selector: (row) => row[key],
-    sortable: true,
-    wrap: true,
+  const columns = columnOrder.map((key) => {
+
+    let columnWidth = "140px";
   
-    style: {
-      minWidth:
-        key === "ad_text"
-          ? "300px"
-          : key === "media_url"
-          ? "120px"
-          : "140px",
+    if (key === "ad_text") {
+      columnWidth = "320px";
+    }
   
-      whiteSpace: "normal",
-      wordBreak: "break-word",
-    },
+    if (key === "media_url") {
+      columnWidth = "120px";
+    }
   
-    cell: (row) => {
-      const value = row[key];
+    return {
+      name: key.toUpperCase(),
+      selector: (row) => row[key],
+      sortable: true,
+      wrap: true,
   
-      // ✅ MEDIA URL
-      if (key === "media_url" && typeof value === "string") {
+      grow: 0, // ✅ important
   
-        let fixedUrl = value.trim();
+      width: columnWidth,
+      minWidth: columnWidth,
+      maxWidth: columnWidth,
   
-        fixedUrl = fixedUrl.replace(/^https\/\//, "https://");
-        fixedUrl = fixedUrl.replace(/^http\/\//, "http://");
+      center: key !== "ad_text",
   
-        if (
-          !fixedUrl.startsWith("http://") &&
-          !fixedUrl.startsWith("https://")
-        ) {
-          fixedUrl = "https://" + fixedUrl.replace(/^\/+/, "");
-        }
+      style: {
+        whiteSpace: "normal",
+        wordBreak: "break-word",
+        textAlign: key === "ad_text" ? "left" : "center",
+      },
   
-        const isVideo =
-          fixedUrl.includes(".mp4") ||
-          fixedUrl.includes("video.fpnh");
+      cell: (row) => {
+        const value = row[key];
   
-        // ✅ VIDEO
-        if (isVideo) {
+        // ✅ MEDIA URL
+        if (key === "media_url" && typeof value === "string") {
+  
+          let fixedUrl = value.trim();
+  
+          fixedUrl = fixedUrl.replace(/^https\/\//, "https://");
+          fixedUrl = fixedUrl.replace(/^http\/\//, "http://");
+  
+          if (
+            !fixedUrl.startsWith("http://") &&
+            !fixedUrl.startsWith("https://")
+          ) {
+            fixedUrl = "https://" + fixedUrl.replace(/^\/+/, "");
+          }
+  
+          const isVideo =
+            fixedUrl.includes(".mp4") ||
+            fixedUrl.includes("video.fpnh");
+  
+          if (isVideo) {
+            return (
+              <video
+                width="80"
+                height="80"
+                controls
+                muted
+                playsInline
+                style={{
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+              >
+                <source src={fixedUrl} type="video/mp4" />
+              </video>
+            );
+          }
+  
           return (
-            <video
-              width="80"
-              height="80"
-              controls
-              muted
-              playsInline
-              style={{
-                borderRadius: "8px",
-                objectFit: "cover",
+            <img
+              src={fixedUrl}
+              alt="ad"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onClick={() => setSelectedImage(fixedUrl)}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src =
+                  "https://via.placeholder.com/80?text=No+Image";
               }}
-            >
-              <source src={fixedUrl} type="video/mp4" />
-            </video>
+              style={{
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+            />
           );
         }
   
-        // ✅ IMAGE
-        return (
-          <img
-            src={fixedUrl}
-            alt="ad"
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            onClick={() => setSelectedImage(fixedUrl)}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src =
-                "https://via.placeholder.com/80?text=No+Image";
-            }}
-            style={{
-              width: "80px",
-              height: "80px",
-              objectFit: "cover",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          />
-        );
-      }
+        // ✅ AD TEXT
+        if (key === "ad_text" && typeof value === "string") {
   
-      // ✅ AD TEXT
-      if (key === "ad_text" && typeof value === "string") {
-        const isLong = value.length > 120;
+          const isLong = value.length > 120;
   
-        return (
-          <div style={{ maxWidth: "300px" }}>
-            {isLong ? value.substring(0, 40) + "..." : value}
+          return (
+            <div style={{ width: "100%" }}>
+              {isLong ? value.substring(0, 40) + "..." : value}
   
-            {isLong && (
-              <span
-                onClick={() => setSelectedText(value)}
-                style={{
-                  color: "#2563eb",
-                  cursor: "pointer",
-                  marginLeft: "5px",
-                  fontWeight: "500",
-                }}
-              >
-                Read more
-              </span>
-            )}
-          </div>
-        );
-      }
+              {isLong && (
+                <span
+                  onClick={() => setSelectedText(value)}
+                  style={{
+                    color: "#2563eb",
+                    cursor: "pointer",
+                    marginLeft: "5px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Read more
+                </span>
+              )}
+            </div>
+          );
+        }
   
-      // ✅ LINK
-      if (
-        typeof value === "string" &&
-        value.startsWith("http")
-      ) {
-        return (
-          <a
-            href={value}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ whiteSpace: "nowrap" }}
-          >
-            🔗 Visit
-          </a>
-        );
-      }
+        // ✅ LINK
+        if (
+          typeof value === "string" &&
+          value.startsWith("http")
+        ) {
+          return (
+            <a
+              href={value}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              🔗 Visit
+            </a>
+          );
+        }
   
-      return value;
-    },
-  }));
+        return value;
+      },
+    };
+  });
 
   // 🎨 Custom Styles
   const customStyles = {
