@@ -3,7 +3,10 @@ services:
     name: scraper-web-ads
     env: python
     rootDir: flask-server
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      apt-get update
+      apt-get install -y chromium chromium-driver
+      pip install -r requirements.txt
     startCommand: gunicorn server:app
     envVars:
       - key: PYTHON_VERSION

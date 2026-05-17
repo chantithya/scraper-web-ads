@@ -16,6 +16,7 @@ from selenium.common.exceptions import WebDriverException, StaleElementReference
 from urllib.parse import quote, urlparse, parse_qs, urlencode, urlunparse
 from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import TimeoutException
+import traceback
 
 
 
@@ -42,7 +43,10 @@ def setup_folders():
 def setup_driver():
     chrome_options = Options()
 
-    chrome_options.binary_location = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
+    chrome_options.binary_location = os.environ.get(
+        "CHROME_BIN",
+        "/usr/bin/chromium"
+    )
 
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
@@ -50,15 +54,23 @@ def setup_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
 
-    # 🔥 IMPORTANT STABILITY FLAGS
-    chrome_options.add_argument("--disable-software-rasterizer")
-    chrome_options.add_argument("--remote-debugging-port=9222")
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--single-process")
     chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-setuid-sandbox")
 
-    service = Service(os.environ.get("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
+    service = Service(
+        os.environ.get(
+            "CHROMEDRIVER_PATH",
+            "/usr/bin/chromedriver"
+        )
+    )
 
-    return webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(
+        service=service,
+        options=chrome_options
+    )
+
+    return driver
 
 
 def clean_facebook_url(url):
@@ -101,8 +113,23 @@ def run_scraper(country, ad_type, keyword):
             encoded_keyword = quote(kw)
 
             # ✅ FIX: use dynamic params
-            url = f"https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=VN&q={encoded_keyword}&search_type=keyword_unordered"
+            country_code = "VN"
 
+            if country == "Vietnam":
+                country_code = "VN"
+
+            ad_type_value = "all"
+
+            url = (
+                f"https://www.facebook.com/ads/library/"
+                f"?active_status=all"
+                f"&ad_type={ad_type_value}"
+                f"&country={country_code}"
+                f"&q={encoded_keyword}"
+                f"&search_type=keyword_unordered"
+            )
+
+            
             print(f"🔍 Searching: {kw}")
             driver.get(url)
 
@@ -249,9 +276,16 @@ def run_scraper(country, ad_type, keyword):
 
         return "Scraping done!"
 
+
+
     except Exception as e:
-        print("Error:", str(e))
-        return "Scraping failed!"
+        print("🔥 SCRAPER ERROR START")
+        traceback.print_exc()
+        print("🔥 SCRAPER ERROR END")
+        return str(e)
 
     finally:
-        driver.quit()
+        try:
+            driver.quit()
+        except:
+            pass
